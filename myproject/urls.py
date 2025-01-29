@@ -19,13 +19,20 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from lessons.views import CourseViewSet
 from lessons.views import LessonListCreateView, LessonDetailView
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("<h1>Добро пожаловать в Django!</h1>")
+
 
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet, basename='course')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),  # Подключаем маршруты
+    path('', home),  # Главная страница (без отдельного приложения)
+    path('admin/', admin.site.urls),  # Админка Django
+    path('api/', include(router.urls)),  # API маршруты
     path('api/lessons/', LessonListCreateView.as_view(), name='lesson-list-create'),
     path('api/lessons/<int:pk>/', LessonDetailView.as_view(), name='lesson-detail'),
+    path('api/', include('users.urls')),  # Подключаем маршруты users
 ]
